@@ -3,13 +3,14 @@ import expressAsyncHandler from "express-async-handler";
 import bcrypt from "bcryptjs";
 import User from "../models/userModels.js";
 import data from "../data.js";
+import { generateToken } from "../utils.js";
 
 const userRouter = express.Router();
 
 userRouter.get(
     "/seed",
     expressAsyncHandler(async (req, res) => {
-      // await User.remove({});
+     await User.remove({});
       const createdUsers = await User.insertMany(data.users);
       res.send({ createdUsers });
     })
@@ -21,7 +22,7 @@ userRouter.get(
       const user = await User.findOne({ email: req.body.email });
       if (user) {
         if (bcrypt.compareSync(req.body.password, user.password)) {
-          res.post({
+          res.send({
             _id: user._id,
             name: user.name,
             email: user.email,
